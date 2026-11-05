@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lexi — Your Vocabulary Voice Coach</title>
+<style>
+:root{--ink:#172033;--muted:#68738a;--bg:#f5f7fb;--card:#fff;--accent:#6558d3;--soft:#eeecff;--line:#e7eaf1;--good:#16845b}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#f5f7ff,#f8fbf8);font-family:Inter,system-ui,Arial,sans-serif;color:var(--ink);min-height:100vh}
+main{max-width:900px;margin:36px auto;padding:20px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}.brand{font-weight:800;font-size:22px;letter-spacing:-.5px}.brand span{color:var(--accent)}.tag{font-size:12px;color:var(--muted);background:#fff;padding:8px 12px;border-radius:99px;border:1px solid var(--line)}
+h1{font-size:clamp(30px,5vw,44px);letter-spacing:-1.5px;margin:8px 0}.sub{color:var(--muted);margin:0 0 24px;line-height:1.6}
+.layout{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:24px;box-shadow:0 12px 35px #25345b0b}
+.kicker{font-size:11px;font-weight:800;letter-spacing:1.2px;color:var(--accent);text-transform:uppercase}.word{font-size:38px;font-weight:800;letter-spacing:-1px;margin:12px 0 3px}.phonetic{color:var(--muted);font-size:14px}.meaning{font-size:18px;line-height:1.5;margin:20px 0 10px}.example{background:#f7f7fc;border-radius:14px;padding:14px;color:#48536b;line-height:1.5}.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+button,select{border:0;border-radius:12px;padding:12px 16px;font-weight:700;font-size:14px;cursor:pointer}button:focus,select:focus{outline:3px solid #c9c4ff}.primary{background:var(--accent);color:#fff}.secondary{background:var(--soft);color:var(--accent)}.outline{background:#fff;border:1px solid var(--line);color:var(--ink)}
+select{background:#f7f7fc;border:1px solid var(--line);color:var(--ink);width:100%;margin-top:10px}
+.progress{height:8px;background:#edf0f6;border-radius:9px;margin:14px 0 8px;overflow:hidden}.bar{height:100%;width:0;background:var(--accent);transition:width .3s}
+.small{font-size:13px;color:var(--muted);line-height:1.5}.stat{font-size:28px;font-weight:800;margin:8px 0 0}.voice{display:flex;gap:10px;align-items:center;margin-top:18px;padding:14px;border-radius:14px;background:#f5f4ff;color:#5147a9;line-height:1.4}
+.chat{min-height:125px;max-height:220px;overflow:auto;background:#fafbfe;border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0;color:#48536b;font-size:14px;line-height:1.55}.inputrow{display:flex;gap:8px}.inputrow input{min-width:0;flex:1;border:1px solid var(--line);border-radius:12px;padding:12px;font:inherit}.status{font-size:12px;color:var(--muted);margin-top:10px}.good{color:var(--good);font-weight:700}
+@media(max-width:700px){main{margin:12px auto;padding:14px}.layout{grid-template-columns:1fr}.card{padding:20px}.top{margin-bottom:18px}}
+</style>
+</head>
+<body>
+<main>
+ <div class="top"><div class="brand">✦ lexi<span>.</span></div><div class="tag">YOUR PERSONAL VOCABULARY COACH</div></div>
+ <div class="kicker">Learn a word. Use it with confidence.</div>
+ <h1>Grow your vocabulary,<br>one conversation at a time.</h1>
+ <p class="sub">Meet Lexi, a friendly voice coach. Listen to a word, practise saying it, and try using it in your own sentence.</p>
+ <div class="layout">
+  <section class="card">
+   <div class="kicker">Today's word · <span id="count">1 / 8</span></div>
+   <div class="word" id="word">Curious</div><div class="phonetic" id="phonetic">/ˈkyʊəriəs/ · adjective</div>
+   <div class="meaning" id="meaning">Eager to know or learn something.</div>
+   <div class="example"><b>Example</b><br><span id="example">“She was curious about how the new app worked.”</span></div>
+   <div class="actions">
+    <button class="primary" id="speak">🔊 Hear pronunciation</button>
+    <button class="secondary" id="next">Next word →</button>
+   </div>
+   <div class="voice">🎙️ <span id="coachLine">Say the word aloud, then try making your own sentence with it.</span></div>
+  </section>
+  <aside class="card">
+   <div class="kicker">Practice with Lexi</div>
+   <p class="small">Tap the mic and say the word or a sentence using it. You can also type if your browser doesn't support voice input.</p>
+   <div class="chat" id="chat" aria-live="polite"> <b>Lexi:</b> Hi! I'm Lexi. Let's learn a new word together. Press the mic and tell me what “curious” means, or use it in a sentence.</div>
+   <div class="actions">
+    <button class="primary" id="mic">🎤 Start speaking</button>
+    <button class="outline" id="hint">Give me a hint</button>
+   </div>
+   <div class="inputrow" style="margin-top:12px"><input id="answer" placeholder="Type your answer here…" aria-label="Your answer"><button class="secondary" id="send">Send</button></div>
+   <div class="status" id="status">Voice input works in supported browsers (Chrome recommended).</div>
+   <div style="margin-top:24px"><div class="kicker">Words practised</div><div class="stat" id="score">0</div><div class="progress"><div class="bar" id="bar"></div></div><div class="small">Keep going — consistency beats cramming.</div></div>
+  </aside>
+ </div>
+ <p class="small" style="text-align:center;margin:20px 0">Prototype · Voice features use your browser's speech services. No account required.</p>
+</main>
+<script>
+const words=[
+ {w:"Curious",p:"/ˈkyʊəriəs/ · adjective",m:"Eager to know or learn something.",e:"“She was curious about how the new app worked.”",h:"Think of someone who asks lots of thoughtful questions.",keys:["curious","eager","interested","want to know","learn"]},
+ {w:"Resilient",p:"/rɪˈzɪliənt/ · adjective",m:"Able to recover quickly after difficulty.",e:"“The team stayed resilient after the setback.”",h:"It describes bouncing back after a tough moment.",keys:["resilient","recover","bounce back","strong","difficult"]},
+ {w:"Concise",p:"/kənˈsaɪs/ · adjective",m:"Giving information clearly in a few words.",e:"“Keep your project update concise and clear.”",h:"A short message that still says everything important.",keys:["concise","brief","short","few words","clear"]},
+ {w:"Adapt",p:"/əˈdæpt/ · verb",m:"To change your approach to suit a new situation.",e:"“Good learners adapt when a strategy isn't working.”",h:"What do you do when plans or conditions change?",keys:["adapt","change","adjust","suit","new situation"]},
+ {w:"Meticulous",p:"/məˈtɪkjələs/ · adjective",m:"Very careful and attentive to detail.",e:"“He was meticulous when checking the report.”",h:"Someone who notices every small detail.",keys:["meticulous","careful","detail","thorough","precise"]},
+ {w:"Collaborate",p:"/kəˈlæbəreɪt/ · verb",m:"To work together with others toward a shared goal.",e:"“Designers and developers collaborate on the product.”",h:"A team does this when everyone contributes.",keys:["collaborate","together","team","work together","shared"]},
+ {w:"Prioritize",p:"/praɪˈɒrətaɪz/ · verb",m:"To decide which things are most important and do them first.",e:"“I prioritize urgent tasks before smaller requests.”",h:"You do this when you rank tasks by importance.",keys:["prioritize","important","first","rank","urgent"]},
+ {w:"Empathy",p:"/ˈempəθi/ · noun",m:"The ability to understand and share another person's feelings.",e:"“Empathy helps support teams understand customers.”",h:"Try imagining how another person feels.",keys:["empathy","feelings","understand","another person","perspective"]}
+];
+let index=0,practised=new Set();
+const $=id=>document.getElementById(id);
+function render(){let x=words[index];$("count").textContent=(index+1)+" / "+words.length;$("word").textContent=x.w;$("phonetic").textContent=x.p;$("meaning").textContent=x.m;$("example").textContent=x.e;$("coachLine").textContent="Say the word aloud, then try making your own sentence with it.";$("chat").innerHTML="<b>Lexi:</b> Our word is <b>"+x.w+"</b>. "+x.m+" Can you use it in a sentence?";$("status").textContent="Ready when you are."}
+function say(t){if(!("speechSynthesis"in window)){ $("status").textContent="Speech playback isn't supported in this browser.";return;}speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(t);u.lang="en-US";u.rate=.88;speechSynthesis.speak(u)}
+function respond(text){let x=words[index],v=text.toLowerCase(),matched=x.keys.some(k=>v.includes(k)),used=v.includes(x.w.toLowerCase());let reply;
+ if(used||matched){practised.add(index);$("score").textContent=practised.size;$("bar").style.width=(practised.size/words.length*100)+"%";reply="Great effort! I can see you connecting with the meaning. "+(used?"You used the word in your response.":"Your answer is close to the meaning.")+" Try one more original sentence if you can.";}
+ else reply="Good try! "+x.h+" The meaning is: "+x.m+" Try again by using “"+x.w+"” in a sentence.";
+ $("chat").innerHTML+="<br><br><b>You:</b> "+escapeHtml(text)+"<br><br><b>Lexi:</b> "+reply;$("chat").scrollTop=$("chat").scrollHeight;say(reply);
+}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+$("speak").onclick=()=>say(words[index].w+". "+words[index].m+". For example: "+words[index].e);
+$("next").onclick=()=>{index=(index+1)%words.length;render()};
+$("send").onclick=()=>{let v=$("answer").value.trim();if(v){respond(v);$("answer").value=""}};
+$("answer").addEventListener("keydown",e=>{if(e.key==="Enter")$("send").click()});
+$("hint").onclick=()=>{let h=words[index].h;$("chat").innerHTML+="<br><br><b>Lexi:</b> Hint: "+h;say("Here's a hint. "+h)};
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+$("mic").onclick=()=>{if(!SR){$("status").textContent="Speech recognition isn't supported here. Please type your answer instead.";return}
+ let r=new SR();r.lang="en-US";r.interimResults=false;r.maxAlternatives=1;$("status").textContent="Listening… speak now.";
+ r.onresult=e=>{let t=e.results[0][0].transcript;$("status").textContent="I heard: "+t;respond(t)};
+ r.onerror=e=>$("status").textContent="Microphone issue ("+e.error+"). Check browser permission or type your answer.";
+ r.onend=()=>{if($("status").textContent==="Listening… speak now.")$("status").textContent="Didn't catch that — try again."};r.start()};
+render();
+</script>
+</body>
+</html>
